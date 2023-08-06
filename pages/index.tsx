@@ -12,6 +12,16 @@ function Home() {
             const data = snapshot.val()
 
             setLikeCount(data.count)
+
+            if ('Notification' in window) {
+                Notification.requestPermission().then((permission) => {
+                    if (permission === 'granted') {
+                        new Notification('Post Liked', {
+                            body: 'Someone liked your post!',
+                        })
+                    }
+                })
+            }
         })
     }, [])
 
@@ -19,16 +29,6 @@ function Home() {
         set(ref(database, 'likes/1'), {
             count,
         })
-
-        if ('Notification' in window) {
-            const permission = await Notification.requestPermission()
-
-            if (permission === 'granted') {
-                const notification = new Notification('Post Liked', {
-                    body: 'Someone liked your post!',
-                })
-            }
-        }
     }
 
     return (
